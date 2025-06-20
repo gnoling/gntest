@@ -1,0 +1,102 @@
+cloudCredentialSecretName: vsphere
+cloudprovider: vsphere
+
+vcenter:
+  host: vcenter.lab
+  vsphere:
+    asyncQueryVolume:
+      enabled: false
+    csiController:
+      csiResizer:
+        enabled: false
+    improvedVolumeTopology:
+      enabled: false
+    onlineVolumeExtend:
+      enabled: false
+    triggerCsiFullsync:
+      enabled: false
+
+globalConfig:
+  systemDefaultRegistry: docker.0s.rip
+  cni: canal
+  service-node-port-range: "30000-32767"
+  docker: false
+  # token: ''
+  # tls_san:
+    # - url
+    # - ip
+  disable:
+    # - rke2-ingress-nginx
+    # - rke2-coredns
+    # - rke2-metrics-server
+  disable_scheduler: false
+  disable_cloud_controller: false
+  disable_kube_proxy: false
+  etcd_expose_metrics: false
+  profile: '' # cis, cis-1.23, or cis-1.6 # https://docs.rke2.io/security/hardening_guide
+  selinux: true # rke2-selinux and container-selinux be installed on the nodes # https://docs.rke2.io/security/selinux
+  secrets_encryption: false
+  write_kubeconfig_mode: 0600
+  use_service_account_credentials: false
+  protect_kernel_defaults: false
+  upgradeStrategy:
+    controlPlaneConcurrency: 10%
+    controlPlaneDrainOptions:
+      enabled: false
+      # deleteEmptyDirData: true
+      # disableEviction: false
+      # force: false
+      # gracePeriod: -1
+      # ignoreDaemonSets: true
+      # ignoreErrors: false
+      # skipWaitForDeleteTimeoutSeconds: 0
+      # timeout: 120
+    workerConcurrency: 10%
+    workerDrainOptions:
+      enabled: true
+      deleteEmptyDirData: true
+      disableEviction: false
+      force: false
+      gracePeriod: -1
+      ignoreDaemonSets: true
+      ignoreErrors: false
+      skipWaitForDeleteTimeoutSeconds: 0
+      timeout: 120
+
+cluster:
+  labels: 
+    cluster-name: e0-rke2-poc7
+    cluster-type: test
+    e3-enclave: on-prem
+    env: test
+  config:
+    etcd:
+      disableSnapshots: false
+      snapshotRetention: 5
+      snapshotScheduleCron: 0 */5 * * *
+    kubernetesVersion: v1.28.15+rke2r1
+    localClusterAuthEndpoint:
+      enabled: true
+  name: e0-rke2-poc7
+
+nodepools:
+- name: mst
+  controlplane: true
+  etcd: true
+  worker: true
+  quantity: 1
+  creationType: template
+  datacenter: /RGS Datacenter
+  pool: /RGS Datacenter/host/RGS Cluster/Resources
+  cloneFrom: /RGS Datacenter/vm/Support/GarretNoling/gn-rocky9
+  datastore: /RGS Datacenter/datastore/datastore1 (1)
+  folder: /RGS Datacenter/vm/Support/GarretNoling
+  cpuCount: 4
+  memorySize: 8192
+  diskSize: 40000
+  network:
+  - /RGS Datacenter/network/VM Network
+  cloudConfig: |
+    #cloud-config
+
+
